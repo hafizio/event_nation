@@ -32,7 +32,12 @@
 
 <p>
   <strong>Organizer:</strong>
-  <%= @event.organizer_id %>
+  <%= @event.organizer.email %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= raw @event.tags.map { |t| raw link_to t.name, tag_path(t.name) }.join(', ') %>
 </p>
 
 <%= link_to 'Edit', edit_event_path(@event) %> |

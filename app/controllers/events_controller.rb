@@ -1,10 +1,14 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: :index
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :event_owner!, only: [:edit, :update, :destroy]
 
   def index
-    @events = Event.all
+    if params[:tag]
+      @events = Event.tagged_with(params[:tag])
+    else
+      @events = Event.all
+    end
   end
 
   def show
@@ -50,14 +54,20 @@ class EventsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def join
+   @attendance = Attendance.join_event(current_user.id, params[:event_id], 'request_sent') 
+   flash[:notice] = 'Request Sent' if @attendance.save
+   respond_with @attendance
+  end
 
   private
     def set_event
-      @event = Event.find(params[:id])
+      @event = Event.friendly.find(params[:id])
     end
 
     def event_params
-      params.require(:event).permit(:title, :start_date, :end_date, :location, :agenda, :address, :organizer_id)
+      params.require(:event).permit(:title, :start_date, :end_date, :location, :agenda, :address, :organizer_id, :all_tags)
     end
 
     def event_owner!

@@ -12,10 +12,13 @@
   <body>
     <header>
       <%= render 'layouts/navigation' %>
+      <%= render 'layouts/tags' %>
     </header>
-    <main role="main">
-       <%= render 'layouts/messages' %>
-       <%= yield %>
+    <main role="main" class='row'>
+      <div class='large-12 columns'>
+        <%= render 'layouts/messages' %>
+        <%= yield %>
+      </div>
     </main>
   </body>
 </html>
